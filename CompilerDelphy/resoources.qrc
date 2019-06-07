@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/new/ims">
+        <file>file.png</file>
+        <file>floppy-disk-interface-symbol-for-save-option-button.png</file>
+        <file>music-player-play.png</file>
+        <file>open-folder-with-document (1).png</file>
+    </qresource>
+</RCC>
