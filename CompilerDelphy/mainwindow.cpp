@@ -65,9 +65,9 @@ void MainWindow::on_actionRun_triggered()
 
 {
     QMap<QString,QString> variablesMap;
-
+    QMap<QString,QString> variablesMap2;
     CLexer* pLexer = new CLexer();
-    pLexer->setExpression("32");
+
 
 
 
@@ -81,72 +81,61 @@ void MainWindow::on_actionRun_triggered()
 
    QRegExp rxTab("(\\ )+");
    QStringList codesLinesParts;
-   QRegExp rxVar("([abc])");
-   QString temp;
+   QRegExp rxVar("\\b([a-dA-D])\\b");
+
    int pos=0;
 
 
-     //       pLexer->setExpression(codesLinesParts[1]);
-     //       CParser* pParser = new CParser(pLexer);
-     //       double dValue = pParser->calculate();
+
 
 
    for(int i=0;i <codesLinesList.size();i++){
       codesLinesParts = codesLinesList[i].split("=");
       variablesMap.insert(codesLinesParts[0].trimmed(),codesLinesParts [1]);
 
-   temp=codesLinesParts[1];
 
-      while ((pos = rxVar.indexIn(temp, pos)) != -1) {
-          qDebug()<<temp;
 
-          qDebug()<<rxVar.cap(1);
+      while ((pos = rxVar.indexIn(codesLinesParts[1], pos)) != -1) {
+
+
+         codesLinesParts[1].replace(rxVar.cap(1),variablesMap.value(rxVar.cap(1)));
           pos += rxVar.matchedLength();
        }
+//      converting the string expression into a double
+//      pLexer->setExpression(codesLinesParts[1]);
+//      CParser* pParser = new CParser(pLexer);
+//      double dValue = pParser->calculate();QString::number(dValue)
 
+      variablesMap.insert(codesLinesParts[0].trimmed(), codesLinesParts[1].trimmed());
 
    pos = 0;
    }
 
-//   while ((pos = rxVar.indexIn(codesLinesParts[1], pos)) != -1) {
-//       qDebug()<<codesLinesParts[1];
-//       qDebug()<<rxVar.cap(1);
-//    codesLinesParts[1].replace(rxVar.cap(1),variablesMap.value(rxVar.cap(1)));
 
-//    pos += rx.matchedLength();
+   for(int i=0;i <codesLinesList.size();i++){
+      codesLinesParts = codesLinesList[i].split("=");
+      variablesMap2.insert(codesLinesParts[0].trimmed(),codesLinesParts [1]);
 
-//      variablesMap.insert(codesLinesParts[0].trimmed(),codesLinesParts [1]);
-//    }
+   }
 
+   ui->resultShow->append("var");
 
-
-   QMapIterator<QString, QString> i(variablesMap);
+   QMapIterator<QString, QString> i(variablesMap2);
     while (i.hasNext()) {
         i.next();
-        ui->resultShow->append(i.key()+" : " + i.value());
+        ui->resultShow->append(i.key()+" : " + "Integer;");
     }
 
+    ui->resultShow->append("begin");
 
+    QMapIterator<QString, QString> j(variablesMap2);
+     while (j.hasNext()) {
+         j.next();
+         ui->resultShow->append(j.key()+" := " + j.value() + ";");
+     }
 
-//
-
-//  if(rxVar.exactMatch(codesLinesParts[0])){
-//      ui->resultShow->setText("TRUE");
-//  }
-//  else{
-//       ui->resultShow->setText("WRONG BITCH");
-//  }
-//for(int i=0;i != codesLinesList.size(); i++){
-//    QStringList codesLinesParts = codesLinesList[i].split(rxTab);
-
-////    if(rxVar.exactMatch(codesLinesParts[0])){
-////        ui->resultShow->setText("TRUE at line " + String);
-////    }
-////    else{
-////         ui->resultShow->setText("WRONG BITCH");
-////    }
-
-//}
+     ui->resultShow->append("WriteLn(C)");
+     ui->resultShow->append("end.");
 
 
 
